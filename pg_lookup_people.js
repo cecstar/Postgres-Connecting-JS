@@ -1,6 +1,8 @@
+//Script for Postgres SQL 'famous_people' lookup.
+
+const inputs = process.argv[2];
 const pg = require("pg");
 const settings = require("./settings"); // settings.json
-const inputs = process.argv[2];
 
 const client = new pg.Client({
   user     : settings.user,
