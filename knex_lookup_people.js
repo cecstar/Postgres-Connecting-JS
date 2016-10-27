@@ -15,13 +15,18 @@ const knex = require('knex')({
   }
 });
 
-knex.schema.createTable('albums', function (table) {
-
-  table.increments('id');
-  table.string('title', 50).notNullable();
-  table.integer('year').notNullable();
-  table.integer('artist_id').references('artists.id').onDelete('cascade');
-  table.timestamps();
-
+knex.select().from('famous_people').where(function (){
+  this.where(
+    'first_name', 'like', input, '%'
+  ).orWhere(
+    'last_name', 'like', input, '%'
+  )
+}).timeout(1000).asCallback(function (err, result){
+  if(err){ throw err; }
+  console.log("Searching...");
+  console.log(`Found 1 person(s) by the name '${input}':`);
+  var result = result[0];
+  console.log(`- ${result.id}: ${result.first_name} ${result.last_name}, born ${result.birthdate.toDateString()}`);
+}).finally(function(){
+  knex.destroy();
 });
-
